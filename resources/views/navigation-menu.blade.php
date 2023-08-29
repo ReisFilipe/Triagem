@@ -15,6 +15,9 @@
                     <x-nav-link href="{{ route('pacientes.index') }}" :active="request()->routeIs('pacientes.index')">
                         Cadastrar Paciente
                     </x-nav-link>
+                    <x-nav-link href="{{ route('grafico.index') }}" :active="request()->routeIs('grafico.index')">
+                        Gráfico
+                    </x-nav-link>
 
                 </div>
             </div>

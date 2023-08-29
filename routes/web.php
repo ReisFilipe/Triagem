@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PacienteController;
+use App\Http\Controllers\ChartJSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,14 @@ Route::get('/paciente/{id}', [PacienteController::class, 'show'])->name('pacient
 Route::get('/paciente/edit/{id}', [PacienteController::class, 'edit'])->name('pacientes.edit');
 Route::delete('/paciente/destroy/{id}', [PacienteController::class, 'destroy'])->name('pacientes.destroy');
 Route::post('/paciente', [PacienteController::class, 'store'])->name('pacientes.store');
+
+Route::get('/grafico', [ChartJSController::class, 'index'])->name('grafico.index');
+Route::get('/graficoEspecialidade', [ChartJSController::class, 'especialidade'])->name('grafico.especialidade');
+
+Route::get('/graficoRisco', [ChartJSController::class, 'risco'])->name('grafico.risco');
+Route::get('/graficoIdade', [ChartJSController::class, 'idade'])->name('grafico.idade');
+Route::get('/graficoFiltro', [ChartJSController::class, 'filtro'])->name('grafico.filtro');
+
 
 /*
 Route::any('/vaga/search', [VagaController::class, 'search'])->name('vaga.search');
