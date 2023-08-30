@@ -19,35 +19,39 @@
                     <h1> <p>Relatório por {{ $_GET['report_type'] }}</p></h1>
                     <a href="{{ route('grafico.index')  }}" class="btn btn-primary"> <i class="bi bi-arrow-return-left"></i> Voltar</a>
 
-                    <div style="width: 40%; margin: 0 auto;">
-                        <canvas id="myChart"></canvas>
+                    <div style="width: 70%; margin: 0 auto;">
+                        <canvas id="pizzaChart"></canvas>
                     </div>
 
-                    <script>
-                        var labels = @json($labels);
-                        var datasets = @json($datasets);
 
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
+
+
+                    <script>
+                        var ctx = document.getElementById('pizzaChart').getContext('2d');
+                        
+                        var labels = <?php echo json_encode($labels); ?>;
+                        var data = <?php echo json_encode($data); ?>;
+                        var backgroundColors = <?php echo json_encode($backgroundColors); ?>;
+                        
+                        var config = {
                             type: 'pie',
                             data: {
                                 labels: labels,
-                                datasets: datasets
+                                datasets: [{
+                                    data: data,
+                                    backgroundColor: backgroundColors,
+                                    borderWidth: 1
+                                }]
                             },
                             options: {
-                            responsive: true,
-                            plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Chart.js Pie Chart'
+                                responsive: true,
+                                maintainAspectRatio: false,
                             }
-                            }
-                        }
-                        });
+                        };
+                        
+                        var myChart = new Chart(ctx, config);
                     </script>
+
                     
                 </div>
             </div>

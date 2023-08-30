@@ -16,29 +16,52 @@
             <div class="bg-white overflow-hidden">
                 <div class="">
                     <h1>Relatório Gráficos</h1>
-    
-                    <form action="{{ route('grafico.filtro') }}" method="GET">
-                        <label for="start_date">Data Inicial:</label>
-                        <input type="date" name="start_date" id="start_date">
-                        <label for="end_date">Data Final:</label>
-                        <input type="date" name="end_date" id="end_date">
-                    
-                        <!-- Combobox para seleção do tipo de relatório -->
-                        <label for="report_type">Selecionar Relatório:</label>
-                        <select name="report_type" id="report_type">
-                            <option value="especialidade">Relatório de Especialidades</option>
-                            <option value="risco">Relatório de Risco</option>
-                            <option value="idade">Relatório de Idade</option>
-                        </select>
+                    @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
 
-                        <!-- Combobox para seleção do tipo de relatório -->
-                        <label for="report_graph">Selecionar Tipo:</label>
-                        <select name="report_graph" id="report_graph">
-                            <option value="barra">Relatório de Barra</option>
-                            <option value="pizza">Relatório de Pizza</option>
-                        </select>
-                        
-                        <button class="btn btn-outline-success" type="submit">Filtrar</button>
+                    <form action="{{ route('grafico.filtro') }}" method="GET">
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="start_date">Data Inicial:</label>
+                                <input type="date" name="start_date" id="start_date" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-2">
+                                <label for="end_date">Data Final:</label>
+                                <input type="date" name="end_date" id="end_date" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="report_type">Tipo de Relatório:</label>
+                                <select name="report_type" id="report_type" class="form-control">
+                                    <option value="especialidade">Relatório de Especialidades</option>
+                                    <option value="risco">Relatório de Risco</option>
+                                    <option value="idade">Relatório de Idade</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-2">
+                                <label for="report_graph">Tipo de Gráfico:</label>
+                                <select name="report_graph" id="report_graph" class="form-control">
+                                    <option value="barra">Gráfico de Barras</option>
+                                    <option value="pizza">Gráfico de Pizza</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <button class="btn btn-success" type="submit">Filtrar</button>
+                        </div>
+
                     </form>
                     
                 </div>
