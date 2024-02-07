@@ -5,6 +5,8 @@ use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ChartJSController;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\OrigemController;
+use App\Http\Controllers\EspecialidadeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +46,23 @@ Route::middleware([
     Route::get('/paciente/edit/{id}', [PacienteController::class, 'edit'])->name('pacientes.edit');
     Route::delete('/paciente/destroy/{id}', [PacienteController::class, 'destroy'])->name('pacientes.destroy');
     Route::post('/paciente', [PacienteController::class, 'store'])->name('pacientes.store');
+    Route::put('/paciente/{id}', [PacienteController::class, 'update'])->name('pacientes.update');
+
+    Route::get('/origem', [OrigemController::class, 'index'])->name('origens.index');
+    Route::get('/origem/create', [OrigemController::class, 'create'])->name('origens.create');
+    Route::get('/origem/{id}', [OrigemController::class, 'show'])->name('origens.show');
+    Route::get('/origem/edit/{id}', [OrigemController::class, 'edit'])->name('origens.edit');
+    Route::delete('/origem/destroy/{id}', [OrigemController::class, 'destroy'])->name('origens.destroy');
+    Route::post('/origem', [OrigemController::class, 'store'])->name('origens.store');
+    Route::put('/origem/{id}', [OrigemController::class, 'update'])->name('origens.update');
+
+    Route::get('/especialidade', [EspecialidadeController::class, 'index'])->name('especialidades.index');
+    Route::get('/especialidade/create', [EspecialidadeController::class, 'create'])->name('especialidades.create');
+    Route::get('/especialidade/{id}', [EspecialidadeController::class, 'show'])->name('especialidades.show');
+    Route::get('/especialidade/edit/{id}', [EspecialidadeController::class, 'edit'])->name('especialidades.edit');
+    Route::delete('/especialidade/destroy/{id}', [EspecialidadeController::class, 'destroy'])->name('especialidades.destroy');
+    Route::post('/especialidade', [EspecialidadeController::class, 'store'])->name('especialidades.store');
+    Route::put('/especialidade/{id}', [EspecialidadeController::class, 'update'])->name('especialidades.update');
     
     Route::get('/grafico', [ChartJSController::class, 'index'])->name('grafico.index');
     Route::get('/graficoEspecialidade', [ChartJSController::class, 'especialidade'])->name('grafico.especialidade');

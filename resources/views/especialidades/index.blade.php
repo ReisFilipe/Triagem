@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Lista de Classificação de pacientes') }}
+            {{ __('Lista de Classificação de Especialidades') }}
         </h2>
     </x-slot>
 
@@ -15,13 +15,13 @@
     
             <div class="bg-white overflow-hidden">
                 <div class="">
-                    <h1>Lista de Pacientes</h1>
+                    <h1>Lista de Especialidades</h1>
     
-                    <a href="{{ route('pacientes.create') }}" class="btn btn-primary">Novo Paciente</a>
+                    <a href="{{ route('especialidades.create') }}" class="btn btn-primary">Nova Especialidade</a>
                     <hr>
                     <div class="table-responsive">
                         <div class="mb-4">
-                            <form action="{{ route('pacientes.index') }}" method="GET">
+                            <form action="{{ route('especialidades.index') }}" method="GET">
                                 <div class="flex items-center">
                                     <input type="text" name="search" class="form-control" placeholder="Pesquisar por nome...">
                                     <button type="submit" class="btn btn-primary ml-2">Pesquisar</button>
@@ -35,38 +35,24 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Nome</th>
-                                    <th>Data de Entrada</th>
-                                    <th>Hora de Entrada</th>
-                                    <th>Idade</th>
-                                    <th>Classificação de Risco</th>
-                                    <th>Origem</th>
-                                    <th>SAMU</th>
-                                    <th>Especialidade</th>
-                                    <th>Sintomas Gripais</th>
+                                    <th>ID</th>
+                                    <th>especialidade</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($pacientes as $paciente)
+                                @foreach ($especialidades as $especialidade)
                                 
                                     <tr>
-                                        <td>{{ $paciente->nome_paciente }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($paciente->Data_entrada)) }}</td>
-                                        <td>{{ $paciente->Hora_entrada }}</td>
-                                        <td>{{ $paciente->idade }}</td>
-                                        <td>{{ $paciente->classificacao->cor }}</td>
-                                        <td>{{ $paciente->origem->origem }}</td>
-                                        <td>{{ $paciente->samu ? 'Sim' : 'Não' }}</td>
-                                        <td>{{ $paciente->especialidade->especialidade }}</td>
-                                        <td>{{ $paciente->Sintomas_gripais ? 'Sim' : 'Não' }}</td>
+                                        <td>{{ $especialidade->id }}</td>
+                                        <td>{{ $especialidade->especialidade }}</td>
                                         <td>
-                                            <a href="{{ route('pacientes.show', $paciente->id) }}" class="btn btn-info">Ver</a>
-                                            <a href="{{ route('pacientes.edit', $paciente->id) }}" class="btn btn-primary">Editar</a>
-                                            <form action="{{ route('pacientes.destroy', $paciente->id) }}" method="POST" style="display: inline-block;">
+                                            <a href="{{ route('especialidades.show', $especialidade->id) }}" class="btn btn-info">Ver</a>
+                                            <a href="{{ route('especialidades.edit', $especialidade->id) }}" class="btn btn-primary">Editar</a>
+                                            <form action="{{ route('especialidades.destroy', $especialidade->id) }}" method="POST" style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este paciente?')">Excluir</button>
+                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este Especialidade?')">Excluir</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -78,7 +64,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
-                                    {{ $pacientes->onEachSide(2)->links() }}
+                                    {{ $especialidades->onEachSide(2)->links() }}
                                 </div>
                             </div>
                     

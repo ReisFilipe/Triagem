@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Paciente;
+use App\Models\Classificacao;
+use App\Models\Origem;
+use App\Models\Especialidade;
 
 class PacienteController extends Controller
 {
@@ -13,10 +16,16 @@ class PacienteController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
-        $query = Paciente::orderBy('id', 'desc');
+
+        $pacientes = Paciente::with(['classificacao', 'origem', 'especialidade'])
+        ->when($search, function ($query) use ($search) {
+            $query->where('nome_paciente', 'like', '%' . $search . '%');
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(20);
+
+        return view('pacientes.index', compact('pacientes', 'search'));
         
-        $pacientes = $query->paginate(20);
-        return view('pacientes.index')->with('pacientes', $pacientes)->with('search', $search);
     }
 
     /**
@@ -24,7 +33,17 @@ class PacienteController extends Controller
      */
     public function create()
     {
-        return view('pacientes.adicionar');
+        $classificacoes = Classificacao::all();
+
+        $origens = Origem::all();
+
+        $especialidades = Especialidade::all();
+
+        return view('pacientes.adicionar', [
+            'classificacoes' => $classificacoes,
+            'origens' => $origens,
+            'especialidades' => $especialidades,
+        ]);
     }
 
     /**
@@ -32,6 +51,7 @@ class PacienteController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validatedData = $request->validate([
             'nome_paciente' => 'required',
             'Data_entrada' => 'required|date',
@@ -52,7 +72,7 @@ class PacienteController extends Controller
             'Hora_entrada' => $validatedData['Hora_entrada'],
             'idade' => $validatedData['idade'],
             'Classificacao_risco' => $validatedData['Classificacao_risco'],
-            'origem' => $validatedData['origem'],
+            'origem_paciente' => $validatedData['origem'],
             'samu' => $validatedData['samu'],
             'Especialidade' => $validatedData['Especialidade'],
             'Sintomas_gripais' => $validatedData['Sintomas_gripais'],
@@ -68,7 +88,14 @@ class PacienteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $paciente = Paciente::with(['classificacao', 'origem', 'especialidade'])->find($id);
+        $classificacoes = Classificacao::all();
+
+        $origens = Origem::all();
+
+        $especialidades = Especialidade::all();
+
+        return view('pacientes.visualizar',  compact('paciente', 'classificacoes', 'origens', 'especialidades'));
     }
 
     /**
@@ -76,7 +103,14 @@ class PacienteController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $paciente = Paciente::with(['classificacao', 'origem', 'especialidade'])->find($id);
+        $classificacoes = Classificacao::all();
+
+        $origens = Origem::all();
+
+        $especialidades = Especialidade::all();
+
+        return view('pacientes.editar',  compact('paciente', 'classificacoes', 'origens', 'especialidades'));
     }
 
     /**
@@ -84,7 +118,24 @@ class PacienteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'nome_paciente' => 'required',
+            'Data_entrada' => 'required|date',
+            'Hora_entrada' => 'required',
+            'idade' => 'required|integer',
+            'Classificacao_risco' => 'required',
+            'origem' => 'required',
+            'samu' => 'required|boolean',
+            'Especialidade' => 'required',
+            'Sintomas_gripais' => 'required|boolean',
+            'coleta_swab' => 'required|boolean',
+            'observacao' => 'nullable',
+        ]);
+    
+        $paciente = Paciente::findOrFail($id);
+        $paciente->update($validatedData);
+    
+        return redirect()->route('pacientes.index')->with('message', 'Paciente atualizado com sucesso!');
     }
 
     /**
@@ -92,7 +143,7 @@ class PacienteController extends Controller
      */
     public function destroy(string $id)
     {
-      //  Paciente::where('id', '=', $id)->delete();
-      
+        Paciente::where('id', '=', $id)->delete();
+        return redirect()->route('pacientes.index')->with('message', 'Paciente excluído com sucesso.');
     }
 }

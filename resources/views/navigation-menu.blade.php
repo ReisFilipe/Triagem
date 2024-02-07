@@ -1,11 +1,11 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100" style="background-color: #49CCED !important;">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('pacientes.index') }}">
                         <x-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
@@ -17,6 +17,12 @@
                     </x-nav-link>
                     <x-nav-link href="{{ route('grafico.index') }}" :active="request()->routeIs('grafico.index')">
                         Gráfico
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('origens.index') }}" :active="request()->routeIs('origens.index')">
+                        Cadastro de Origem 
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('especialidades.index') }}" :active="request()->routeIs('especialidades.index')">
+                        Cadastro de Especialidade 
                     </x-nav-link>
 
                 </div>

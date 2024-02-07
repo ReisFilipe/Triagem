@@ -7,6 +7,7 @@ use App\Models\Paciente;
 use DB;
 use Illuminate\Support\Facades\Validator;
 
+
 class ChartJSController extends Controller
 {
     /**
@@ -94,22 +95,25 @@ class ChartJSController extends Controller
             'December' => 'Dezembro',
         ];
 
+
+
         $query = Paciente::select(
             DB::raw("COUNT(*) as count"),
-            DB::raw("MONTHNAME(created_at) as month_name"),
-            'Especialidade'
+            DB::raw("MONTHNAME(pacientes.Data_entrada) as month_name"),
+            'especialidade.especialidade as nome_especialidade',
+            'pacientes.Especialidade'
         )
-        ;
-
-    // Aplicar filtro de datas, se fornecido
-    if ($startDate && $endDate) {
-        $query->whereBetween('created_at', [$startDate, $endDate]);
-    }
-
-    $atendimentos = $query
-        ->groupBy('Especialidade', DB::raw("MONTH(created_at), MONTHNAME(created_at)"))
-        ->get();
-    
+        ->leftJoin('especialidade', 'pacientes.Especialidade', '=', 'especialidade.id');
+        
+        // Aplicar filtro de datas, se fornecido
+        if ($startDate && $endDate) {
+            $query->whereBetween('pacientes.Data_entrada', [$startDate, $endDate]);
+        }
+        
+        $atendimentos = $query
+            ->groupBy('especialidade.especialidade', DB::raw('MONTH(pacientes.Data_entrada)'), DB::raw('MONTHNAME(pacientes.Data_entrada)'), 'pacientes.Especialidade')
+            ->get();
+        
         $labels = $atendimentos->pluck('month_name')->unique()->map(function ($monthName) use ($mesesEmPortugues) {
             return $mesesEmPortugues[$monthName];
         });
@@ -117,15 +121,19 @@ class ChartJSController extends Controller
         
         // Agrupar os dados por especialidade para cada mês
         foreach ($atendimentos->groupBy('Especialidade') as $especialidade => $data) {
+            // Obtém o nome da especialidade a partir da primeira linha do grupo
+            $nome_especialidade = $data->first()->nome_especialidade;
+        
             $counts = $data->pluck('count');
             $dataset = [
-                'label' => $especialidade,
+                'label' => $nome_especialidade,
                 'data' => $counts,
-                #'backgroundColor' => // Defina as cores de fundo aqui,
-                #'borderColor' => // Defina as cores da borda aqui,
+                // Adicione 'backgroundColor' e 'borderColor' conforme necessário
             ];
+        
             $datasets[] = $dataset;
         }
+        
         
         return view('grafico.gbarra', compact('labels', 'datasets'));
         
@@ -138,18 +146,27 @@ class ChartJSController extends Controller
 
         $query = Paciente::select(
             DB::raw("COUNT(*) as count"),
+            'especialidade.especialidade as nome_especialidade',
+            'pacientes.Especialidade'
+        )
+        ->leftJoin('especialidade', 'pacientes.Especialidade', '=', 'especialidade.id')
+        ->groupBy('especialidade.especialidade',  'pacientes.Especialidade');
+        
+/*
+        $query = Paciente::select(
+            DB::raw("COUNT(*) as count"),
             DB::raw("Especialidade")
         )
         ->where('idade', '>=', 14)
         ->groupBy('Especialidade');
-
+*/
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('Data_entrada', [$startDate, $endDate]);
         }
     
         $atendimentos = $query->get();
     
-        $labels = $atendimentos->pluck('Especialidade');
+        $labels = $atendimentos->pluck('nome_especialidade');
         $data = $atendimentos->pluck('count');
         $backgroundColors = [
             '#FF5733', '#C70039', '#900C3F', '#581845', '#2E4053', '#1B4F72', '#2471A3', '#2980B9', '#5499C7'
@@ -179,38 +196,38 @@ class ChartJSController extends Controller
             'December' => 'Dezembro',
         ];
 
+        
         $query = Paciente::select(
             DB::raw("COUNT(*) as count"),
-            DB::raw("MONTHNAME(created_at) as month_name"),
-            'Classificacao_risco'
-        )
+            DB::raw("MONTHNAME(Data_entrada) as month_name"),
+            'Classificacao_risco',
+            'cor'
+        )->leftJoin('classificacao', 'pacientes.Classificacao_risco', '=', 'classificacao.id')
+            
+        ->groupBy('Classificacao_risco', 'cor', DB::raw("MONTH(Data_entrada), MONTHNAME(Data_entrada)"));
         
-        ->groupBy('Classificacao_risco', DB::raw("MONTH(created_at), MONTHNAME(created_at)"));
-    
         // Aplica o filtro por data se as datas estiverem presentes
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('Data_entrada', [$startDate, $endDate]);
         }
-    
+        
         $atendimentos = $query->get();
-    
-    
+        
         $labels = $atendimentos->pluck('month_name')->unique()->map(function ($monthName) use ($mesesEmPortugues) {
             return $mesesEmPortugues[$monthName];
         });
         $datasets = [];
         
         // Agrupar os dados por Classificacao_risco para cada mês
-        foreach ($atendimentos->groupBy('Classificacao_risco') as $filtro => $data) {
+        foreach ($atendimentos->groupBy('Classificacao_risco', 'cor') as $data) {
             $counts = $data->pluck('count');
             $dataset = [
-                'label' => $filtro,
-                'data' => $counts,
-                #'backgroundColor' => // Defina as cores de fundo aqui,
-                #'borderColor' => // Defina as cores da borda aqui,
+                'label' => $data->first()->cor, // Usar a cor da primeira linha do grupo como label
+                'data' => $counts
             ];
             $datasets[] = $dataset;
         }
+        
 
         return view('grafico.gbarra', compact('labels', 'datasets'));
     
@@ -219,20 +236,30 @@ class ChartJSController extends Controller
 
     public function riscopizza($startDate, $endDate, $tipoGrafico)
     {
+
+        $query = Paciente::select(
+            DB::raw("COUNT(*) as count"),
+            'classificacao.cor',
+            'pacientes.Classificacao_risco'
+        )
+        ->leftJoin('classificacao', 'pacientes.Classificacao_risco', '=', 'classificacao.id')
+        ->groupBy('classificacao.cor',  'pacientes.Classificacao_risco');
+        
+        /*
         $query = Paciente::select(
             DB::raw("COUNT(*) as count"),
             DB::raw("Classificacao_risco")
         )
         ->where('idade', '>=', 14)
         ->groupBy('Classificacao_risco');
-
+*/
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('Data_entrada', [$startDate, $endDate]);
         }
     
         $atendimentos = $query->get();
     
-        $labels = $atendimentos->pluck('Classificacao_risco');
+        $labels = $atendimentos->pluck('cor');
         $data = $atendimentos->pluck('count');
         $backgroundColors = [
             '#FF5733', '#C70039', '#900C3F', '#581845', '#2E4053', '#1B4F72', '#2471A3', '#2980B9', '#5499C7'
@@ -274,16 +301,16 @@ class ChartJSController extends Controller
         
         $query = Paciente::select(
             DB::raw("COUNT(*) as count"),
-            DB::raw("MONTHNAME(created_at) as month_name"),
+            DB::raw("MONTHNAME(Data_entrada) as month_name"),
             DB::raw("FLOOR((idade - 14) / 10) * 10 + 14 as idade_faixa")
         )
         
         ->where('idade', '>=', 14)
-        ->groupBy('idade_faixa', DB::raw("MONTH(created_at), MONTHNAME(created_at)"));
+        ->groupBy('idade_faixa', DB::raw("MONTH(Data_entrada), MONTHNAME(Data_entrada)"));
         
         // Aplicar filtro por período se as datas estiverem presentes
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('Data_entrada', [$startDate, $endDate]);
         }
         
         $atendimentos = $query->get();
@@ -333,7 +360,7 @@ class ChartJSController extends Controller
         ->groupBy('faixa_etaria');
 
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('Data_entrada', [$startDate, $endDate]);
         }
     
         $atendimentos = $query->get();

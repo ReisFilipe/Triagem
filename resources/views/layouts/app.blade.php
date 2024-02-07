@@ -42,7 +42,7 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen bg-gray-100 ">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -66,28 +66,28 @@
         @livewireScripts
 
     <!-- Footer -->
-    <footer class="bg-dark text-center text-white">
+    <footer class="bg-white border-b border-gray-100 text-center" style="background-color: #49CCED !important;">
         <!-- Grid container -->
         <div class="container p-4">
         <!-- Section: Social media -->
         <section class="mb-4">
             <!-- Facebook -->
-            <a class="btn btn-outline-light btn-floating m-1" href="https://www.facebook.com/hnsgsetelagoas" role="button"
+            <a class="btn btn-outline-light btn-floating m-1" href="https://www.facebook.com/hnsgsetelagoas" target="_blank" role="button"
             ><i class="fab fa-facebook-f"></i
             ></a>
     
             <!-- Instagram -->
-            <a class="btn btn-outline-light btn-floating m-1" href="https://instagram.com/hnsgsetelagoas" role="button"
+            <a class="btn btn-outline-light btn-floating m-1" href="https://instagram.com/hnsgsetelagoas" target="_blank" role="button"
             ><i class="fab fa-instagram"></i
             ></a>
     
             <!-- Linkedin -->
-            <a class="btn btn-outline-light btn-floating m-1" href="https://www.linkedin.com/company/hnsgsetelagoas/" role="button"
+            <a class="btn btn-outline-light btn-floating m-1" href="https://www.linkedin.com/company/hnsgsetelagoas/" target="_blank" role="button"
             ><i class="fab fa-linkedin-in"></i
             ></a>
     
             <!-- Github -->
-            <a class="btn btn-outline-light btn-floating m-1" href="https://github.com/ReisFilipe" role="button"
+            <a class="btn btn-outline-light btn-floating m-1" href="https://github.com/ReisFilipe" target="_blank" role="button"
             ><i class="fab fa-github"></i
             ></a>
         </section>
@@ -97,9 +97,7 @@
         <!-- Section: Text -->
         <section class="mb-4">
             <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt distinctio earum
-            repellat quaerat voluptatibus placeat nam, commodi optio pariatur est quia magnam
-            eum harum corrupti dicta, aliquam sequi voluptate quas.
+            Controle de Triagem de Paciente Para o HNSG
             </p>
         </section>
 
@@ -108,8 +106,10 @@
     
         <!-- Copyright -->
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2020 Copyright:
-        <a class="text-white" href="https://hnsg.com.br/">Irmandade de Nossa Senhora das Graças.</a>
+        Desenvolvido por: 
+        <a class="text-white" href="https://github.com/ReisFilipe" target="_blank">Filipe Reis</a>
+        © {{ date('Y') }} Copyright:
+        <a class="text-white" href="https://hnsg.com.br/" target="_blank">Irmandade de Nossa Senhora das Graças</a>
         </div>
         <!-- Copyright -->
     </footer>
