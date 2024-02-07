@@ -15,14 +15,14 @@
                     <x-nav-link href="{{ route('pacientes.index') }}" :active="request()->routeIs('pacientes.index')">
                         Cadastrar Paciente
                     </x-nav-link>
-                    <x-nav-link href="{{ route('grafico.index') }}" :active="request()->routeIs('grafico.index')">
-                        Gráfico
-                    </x-nav-link>
                     <x-nav-link href="{{ route('origens.index') }}" :active="request()->routeIs('origens.index')">
                         Cadastro de Origem 
                     </x-nav-link>
                     <x-nav-link href="{{ route('especialidades.index') }}" :active="request()->routeIs('especialidades.index')">
                         Cadastro de Especialidade 
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('grafico.index') }}" :active="request()->routeIs('grafico.index')">
+                        Gráfico
                     </x-nav-link>
 
                 </div>

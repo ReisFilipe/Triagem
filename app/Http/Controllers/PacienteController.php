@@ -64,6 +64,13 @@ class PacienteController extends Controller
             'Sintomas_gripais' => 'required|boolean',
             'coleta_swab' => 'required|boolean',
             'observacao' => 'nullable',
+        ], [
+            'nome_paciente.required' => 'O nome do paciente é obrigatório.',
+            'Data_entrada.required' => 'A data de entrada é obrigatória.',
+            'Data_entrada.date' => 'A data de entrada deve ser uma data válida.',
+            'Hora_entrada.required' => 'A hora de entrada é obrigatória.',
+            'idade.required' => 'A idade é obrigatória.',
+            'idade.integer' => 'A idade deve ser um número inteiro.',
         ]);
 
         Paciente::create([
